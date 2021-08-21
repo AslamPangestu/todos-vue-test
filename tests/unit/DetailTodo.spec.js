@@ -24,6 +24,32 @@ const setup = () => {
 };
 
 describe("DetailTodo Page", () => {
-  it.todo("loading and show detail data");
-  it.todo("update data and redirect to todolist");
+  it("show activity is already done", async () => {
+    const data = mockData.todos.find((item) => item.is_done);
+    axios.get.mockResolvedValue({ data });
+    setup();
+    expect(wrapper.findComponent({ ref: "loadingRef" }).exists()).toBeTruthy();
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findComponent({ ref: "successRef" }).exists()).toBeTruthy();
+    expect(wrapper.findComponent({ ref: "doneRef" }).exists()).toBeTruthy();
+  });
+  it("show activity is not done and will set activity to be done if click done button", async () => {
+    const data = mockData.todos.find((item) => !item.is_done);
+    axios.get.mockResolvedValue({ data });
+    setup();
+    expect(wrapper.findComponent({ ref: "loadingRef" }).exists()).toBeTruthy();
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findComponent({ ref: "successRef" }).exists()).toBeTruthy();
+    expect(wrapper.findComponent({ ref: "notDoneRef" }).exists()).toBeTruthy();
+    axios.patch.mockResolvedValue({ status: 200, message: "Success" });
+    await wrapper.findComponent({ ref: "notDoneRef" }).trigger("click");
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$router.push).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+      name: "TodoList",
+    });
+  });
 });

@@ -3,7 +3,7 @@
     <h1>Detail Todo</h1>
     <div>
       <template v-if="pageStatus === 'success'">
-        <div class="row mt-3 justify-content-center">
+        <div ref="successRef" class="row mt-3 justify-content-center">
           <div class="col-md-3 border p-3">
             <div class="text-center font-weight-bold">{{ todoData.todo }}</div>
             <div>at {{ todoData.where }}</div>
@@ -11,6 +11,7 @@
               {{ todoData.detail }}
             </div>
             <div
+              ref="doneRef"
               style="font-size: 12px"
               class="mt-4 text-success"
               v-if="todoData.is_done"
@@ -18,6 +19,7 @@
               you've done this activity
             </div>
             <button
+              ref="notDoneRef"
               class="btn-sm w-100 mt-4 btn btn-primary"
               v-if="!todoData.is_done"
               @click="onDoneClick"
